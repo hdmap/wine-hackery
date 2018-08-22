@@ -1,0 +1,11 @@
+--- a/dlls/d3dxof/d3dxof_private.h	2018-08-21 15:13:45.030354285 -0400
++++ a/dlls/d3dxof/d3dxof_private.h	2018-08-21 15:14:55.363359367 -0400
+@@ -130,7 +130,7 @@
+   BOOL list_separator;
+   ULONG cur_pos_data;
+   LPBYTE cur_pstrings;
+-  BYTE value[100];
++  BYTE value[512];
+   xobject** pxo_globals;
+   ULONG nb_pxo_globals;
+   xobject* pxo_tab;
