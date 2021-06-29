@@ -1,0 +1,43 @@
+--- a/dlls/wininet/http.c	2021-03-16 00:28:58.210875096 -0400
++++ a/dlls/wininet/http.c	2021-03-16 02:01:21.525569636 -0400
+@@ -1202,7 +1202,7 @@
+ 
+     TRACE("copying header: %s\n", debugstr_wn(lpszHeader, dwHeaderLength));
+ 
+-    if( dwHeaderLength == ~0U )
++    if( dwHeaderLength == ~0U || dwHeaderLength == 0)
+         len = lstrlenW(lpszHeader);
+     else
+         len = dwHeaderLength;
+@@ -4928,7 +4928,7 @@
+     }
+ 
+     /* add the headers the caller supplied */
+-    if( lpszHeaders && dwHeaderLength )
++    if( lpszHeaders )
+         HTTP_HttpAddRequestHeadersW(request, lpszHeaders, dwHeaderLength, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDHDR_FLAG_REPLACE);
+ 
+     do
+@@ -5506,6 +5506,8 @@
+ 
+             if (lpBuffersIn->lpcszHeader)
+             {
++                TRACE("HttpSendRequestExW headers: %ls", lpBuffersIn->lpcszHeader);
++                
+                 if (lpBuffersIn->dwHeadersLength == ~0u)
+                     size = (lstrlenW( lpBuffersIn->lpcszHeader ) + 1) * sizeof(WCHAR);
+                 else
+@@ -5538,9 +5540,13 @@
+     else
+     {
+         if (lpBuffersIn)
++	{
++	    if (lpBuffersIn->lpcszHeader)
++	         TRACE("HttpSendRequestExW headers: %ls", lpBuffersIn->lpcszHeader);
+             res = HTTP_HttpSendRequestW(request, lpBuffersIn->lpcszHeader, lpBuffersIn->dwHeadersLength,
+                                         lpBuffersIn->lpvBuffer, lpBuffersIn->dwBufferLength,
+                                         lpBuffersIn->dwBufferTotal, FALSE);
++        }
+         else
+             res = HTTP_HttpSendRequestW(request, NULL, 0, NULL, 0, 0, FALSE);
+     }
